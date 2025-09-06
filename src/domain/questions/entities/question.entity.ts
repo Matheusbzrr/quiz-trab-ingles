@@ -1,4 +1,3 @@
-// src/questions/entities/question.entity.ts
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
 import { ModuleApp } from '../../modules/entities/module.entity';
 import { AnswerOption } from './answer-option.entity';

@@ -38,7 +38,7 @@ export class JwtAuthGuardConfig extends AuthGuard('jwt') {
       return true;
     }
     const { user } = context.switchToHttp().getRequest();
-    if (user?.isSuperAdm === true) {
+    if (user?.isTeacher === true) {
       return true;
     }
     throw new UnauthorizedException('Acesso restrito a Super Administradores.');

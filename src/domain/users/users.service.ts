@@ -86,7 +86,7 @@ export class UsersService {
     const payload = {
       sub: user.id,
       email: user.email,
-      Type: user.role,
+      isTeacher: user.role === 'professor' ? true : false,
     };
 
     const token = await this.jwtService.signAsync(payload);
