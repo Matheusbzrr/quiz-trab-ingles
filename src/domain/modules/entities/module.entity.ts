@@ -1,4 +1,3 @@
-// src/modules/entities/module.entity.ts
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { Question } from '../../questions/entities/question.entity';
 
@@ -10,6 +9,6 @@ export class ModuleApp {
   @Column()
   title: string;
 
-  @OneToMany(() => Question, question => question.module)
+  @OneToMany(() => Question, question => question.module, {cascade: true})
   questions: Question[];
 }

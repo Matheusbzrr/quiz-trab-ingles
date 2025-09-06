@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { ModulesService } from './modules.service';
-import { CreateModuleDto } from './dto/create-module.dto';
-import { UpdateModuleDto } from './dto/update-module.dto';
+import { CreateModuleAppDto } from './dto/create-module.dto';
+import { UpdateModuleAppDto } from './dto/update-module.dto';
 import { IS_TEACHER, SuperAdmOnly } from '../common/decorators/teacher.decorator';
 
 @Controller('modules')
@@ -10,7 +10,7 @@ export class ModulesController {
 
   @Post()
   @SuperAdmOnly()
-  create(@Body() createModuleDto: CreateModuleDto) {
+  create(@Body() createModuleDto: CreateModuleAppDto) {
     return this.modulesService.create(createModuleDto);
   }
 
@@ -26,7 +26,7 @@ export class ModulesController {
 
   @Patch(':id')
   @SuperAdmOnly()
-  update(@Param('id') id: string, @Body() updateModuleDto: UpdateModuleDto) {
+  update(@Param('id') id: string, @Body() updateModuleDto: UpdateModuleAppDto) {
     return this.modulesService.update(+id, updateModuleDto);
   }
 

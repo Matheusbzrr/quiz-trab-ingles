@@ -25,3 +25,11 @@ export class CreateProfessorDto {
   @MinLength(8, { message: 'A senha deve ter no mínimo 8 caracteres.' })
   password: string;
 }
+
+export class LoginDto {
+  @IsEmail()
+  email: string;
+
+  @IsNotEmpty()
+  password: string;
+}
