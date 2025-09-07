@@ -1,14 +1,14 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
-import { Question } from '../../questions/entities/question.entity';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import { Questions } from "../../questions/entities/question.entity";
 
 @Entity()
 export class ModuleApp {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column()
   title: string;
 
-  @OneToMany(() => Question, question => question.module, {cascade: true})
-  questions: Question[];
+  @OneToMany(() => Questions, (question) => question.module, { cascade: true })
+  questions: Questions[];
 }
