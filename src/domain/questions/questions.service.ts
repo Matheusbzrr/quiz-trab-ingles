@@ -10,6 +10,7 @@ import {
 import { InjectRepository } from "@nestjs/typeorm";
 import { Questions } from "./entities/question.entity";
 import { Repository } from "typeorm";
+import { AnswerOption } from "./entities/answer-option.entity";
 
 @Injectable()
 export class QuestionsService {
@@ -53,12 +54,52 @@ export class QuestionsService {
   findOne(id: number) {
     return `This action returns a #${id} question`;
   }
+  async update(id: string, updateQuestionDto: UpdateQuestionDto) {
+    const question = await this.questionsRepository.findOne({
+      where: { id },
+      relations: ["options"],
+    });
 
-  update(id: number, updateQuestionDto: UpdateQuestionDto) {
-    return `This action updates a #${id} question`;
+    if (!question) throw new NotFoundException("Pergunta não encontrada");
+    if (updateQuestionDto.text !== undefined) {
+      question.text = updateQuestionDto.text;
+    }
+
+    if (updateQuestionDto.options) {
+      for (const opt of updateQuestionDto.options) {
+        if (opt.id) {
+          const existing = question.options.find((o) => o.id === opt.id);
+          if (existing) {
+            existing.text = opt.text ?? existing.text;
+            existing.isCorrect = opt.isCorrect ?? existing.isCorrect;
+          }
+        } else {
+          const newOption = this.questionsRepository.manager.create(
+            AnswerOption,
+            {
+              text: opt.text,
+              isCorrect: opt.isCorrect,
+              question,
+            }
+          );
+          question.options.push(newOption);
+        }
+      }
+    }
+
+    return this.questionsRepository.save(question);
   }
+  async remove(id: string) {
+    const question = await this.questionsRepository.findOne({
+      where: { id },
+      relations: ["options"],
+    });
 
-  remove(id: number) {
-    return `This action removes a #${id} question`;
+    if (!question) {
+      throw new NotFoundException("Pergunta não encontrada");
+    }
+    await this.questionsRepository.remove(question);
+
+    return { message: `Pergunta ${id} removida com sucesso` };
   }
 }

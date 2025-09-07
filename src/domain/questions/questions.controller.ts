@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Query,
+  Put,
 } from "@nestjs/common";
 import { QuestionsService } from "./questions.service";
 import {
@@ -39,18 +40,18 @@ export class QuestionsController {
     return this.questionsService.findOne(+id);
   }
 
-  @Patch(":id")
+  @Put(":id")
   @SuperAdmOnly()
-  update(
+  async update(
     @Param("id") id: string,
     @Body() updateQuestionDto: UpdateQuestionDto
   ) {
-    return this.questionsService.update(+id, updateQuestionDto);
+    return await this.questionsService.update(id, updateQuestionDto);
   }
 
   @Delete(":id")
   @SuperAdmOnly()
-  remove(@Param("id") id: string) {
-    return this.questionsService.remove(+id);
+  async remove(@Param("id") id: string) {
+    return await this.questionsService.remove(id);
   }
 }

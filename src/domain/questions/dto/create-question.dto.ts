@@ -1,7 +1,14 @@
-import { PartialType } from '@nestjs/mapped-types';
+import { PartialType } from "@nestjs/mapped-types";
 
-import { IsString, IsArray, ValidateNested, IsNumber } from 'class-validator';
-import { Type } from 'class-transformer';
+import {
+  IsString,
+  IsArray,
+  ValidateNested,
+  IsNumber,
+  IsOptional,
+  IsBoolean,
+} from "class-validator";
+import { Type } from "class-transformer";
 
 export class CreateAnswerOptionDto {
   @IsString()
@@ -24,4 +31,27 @@ export class CreateQuestionDto {
   options: CreateAnswerOptionDto[];
 }
 
-export class UpdateQuestionDto extends PartialType(CreateQuestionDto) {}
+export class UpdateAnswerOptionDto {
+  @IsOptional()
+  id?: string;
+
+  @IsOptional()
+  @IsString()
+  text?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  isCorrect?: boolean;
+}
+
+export class UpdateQuestionDto {
+  @IsOptional()
+  @IsString()
+  text?: string;
+
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => UpdateAnswerOptionDto)
+  options?: UpdateAnswerOptionDto[];
+}
