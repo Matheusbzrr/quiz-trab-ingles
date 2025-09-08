@@ -20,4 +20,4 @@ RUN npm run build
 EXPOSE 4000
 
 # 8. Comando para rodar a aplicação
-CMD ["node", "dist/main"]
+CMD ["node", "dist/main", "start:prod"]
