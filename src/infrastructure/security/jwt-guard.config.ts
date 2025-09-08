@@ -1,5 +1,3 @@
-// src/common/configs/jwt-auth-guard.config.ts
-
 import {
   Injectable,
   ExecutionContext,

@@ -1,34 +1,22 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { QuizService } from './quiz.service';
-import { CreateQuizDto } from './dto/create-quiz.dto';
-import { UpdateQuizDto } from './dto/update-quiz.dto';
+import { Controller, Post, Body, Request, Get, Param } from "@nestjs/common";
+import { StudentAnswersService } from "./quiz.service";
+import { CreateStudentAnswerDto } from "./dto/create-student-answer.dto.ts";
 
-@Controller('quiz')
-export class QuizController {
-  constructor(private readonly quizService: QuizService) {}
+@Controller("/student-answers")
+export class StudentAnswersController {
+  constructor(private readonly studentAnswersService: StudentAnswersService) {}
 
-  @Post()
-  create(@Body() createQuizDto: CreateQuizDto) {
-    return this.quizService.create(createQuizDto);
+  @Post('/module/:moduleId')
+  async createMany(
+    @Param("moduleId") moduleId: number,
+    @Body() dtos: CreateStudentAnswerDto[],
+    @Request() req
+  ) {
+    return this.studentAnswersService.createMany(dtos, +moduleId, req.user);
   }
 
-  @Get()
-  findAll() {
-    return this.quizService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.quizService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateQuizDto: UpdateQuizDto) {
-    return this.quizService.update(+id, updateQuizDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.quizService.remove(+id);
+  @Get("me")
+  async myAnswers(@Request() req) {
+    return this.studentAnswersService.findByStudent(req.user.id);
   }
 }

@@ -1,4 +1,3 @@
-// src/quiz/entities/student-answer.entity.ts
 import { Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { Questions } from '../../questions/entities/question.entity';
