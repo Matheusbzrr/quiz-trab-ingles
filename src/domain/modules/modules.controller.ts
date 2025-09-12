@@ -11,6 +11,7 @@ import { ModulesService } from "./modules.service";
 import { CreateModuleAppDto } from "./dto/create-module.dto";
 import { UpdateModuleAppDto } from "./dto/update-module.dto";
 import { SuperAdmOnly } from "../common/decorators/teacher.decorator";
+import { CreateModulesWithQuestionsDto } from "./dto/create-modules-with-questions";
 
 @Controller("modules")
 export class ModulesController {
@@ -20,6 +21,10 @@ export class ModulesController {
   @SuperAdmOnly()
   async create(@Body() createModuleDto: CreateModuleAppDto) {
     return await this.modulesService.create(createModuleDto);
+  }
+  @Post("batch")
+  async createBatch(@Body() dto: CreateModulesWithQuestionsDto) {
+    return this.modulesService.createModulesWithQuestions(dto);
   }
 
   @Get()

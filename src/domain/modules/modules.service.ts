@@ -9,12 +9,15 @@ import { UpdateModuleAppDto } from "./dto/update-module.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { ModuleApp } from "./entities/module.entity";
+import { CreateModulesWithQuestionsDto } from "./dto/create-modules-with-questions";
+import { QuestionsService } from "../questions/questions.service";
 
 @Injectable()
 export class ModulesService {
   constructor(
     @InjectRepository(ModuleApp)
-    private readonly moduleRepository: Repository<ModuleApp>
+    private readonly moduleRepository: Repository<ModuleApp>,
+    private readonly questionsService: QuestionsService
   ) {}
 
   async create(createModuleDto: CreateModuleAppDto) {
@@ -30,6 +33,36 @@ export class ModulesService {
     } catch (error) {
       throw new InternalServerErrorException("Erro no servidor");
     }
+  }
+
+  async createModulesWithQuestions(dto: CreateModulesWithQuestionsDto) {
+    const createdModules: ModuleApp[] = [];
+
+    for (const moduleDto of dto.modules) {
+      const existModule = await this.moduleRepository.findOneBy({
+        title: moduleDto.title,
+      });
+      if (existModule) {
+        throw new ConflictException(
+          `Módulo com título "${moduleDto.title}" já existe`
+        );
+      }
+      const newModule = this.moduleRepository.create({
+        title: moduleDto.title,
+      });
+      await this.moduleRepository.save(newModule);
+
+      for (const questionDto of moduleDto.questions) {
+        await this.questionsService.create({
+          ...questionDto,
+          moduleId: newModule.id,
+        });
+      }
+
+      createdModules.push(newModule);
+    }
+
+    return createdModules;
   }
 
   async findAll() {

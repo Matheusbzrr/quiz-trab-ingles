@@ -11,17 +11,20 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Questions } from "./entities/question.entity";
 import { Repository } from "typeorm";
 import { AnswerOption } from "./entities/answer-option.entity";
+import { ModuleApp } from "../modules/entities/module.entity";
 
 @Injectable()
 export class QuestionsService {
   constructor(
     @InjectRepository(Questions)
-    private readonly questionsRepository: Repository<Questions>
+    private readonly questionsRepository: Repository<Questions>,
+    @InjectRepository(ModuleApp)
+    private readonly moduleRepository: Repository<ModuleApp>
   ) {}
   async create(createQuestionDto: CreateQuestionDto) {
     const { text, moduleId } = createQuestionDto;
-    const confirmModule = await this.questionsRepository.findOneBy({
-      moduleId,
+    const confirmModule = await this.moduleRepository.findOneBy({
+      id: moduleId,
     });
     if (!confirmModule) {
       throw new NotFoundException("Modulo não encontrado");
